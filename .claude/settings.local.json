@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"/c/Users/Victor Ads/Desktop/site-monstro\" && echo \"=== public ===\" && ls -R public 2>/dev/null | head -40 && echo \"=== grep tokens usados ===\" && grep -rhoE \"bg-bg-base|font-display|font-sora|brand-green|dark-\\(bg|text|muted|stroke\\)|sentinel-[a-z]+|animate-pulse-glow\" src/components | sort -u)"
+    ]
+  }
+}
