@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'motion/react'
 import { Menu, X, ArrowRight, Globe } from 'lucide-react'
 import { WHATSAPP_URL } from '../lib/contact'
@@ -43,12 +43,13 @@ function useTypewriter(lines: string[], speed = 55, pause = 1400) {
 export default function AuraiHero() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { t, lang, toggleLang } = useTranslation()
-  const termText = useTypewriter([
+  const terminalLines = useMemo(() => [
     t('hero.terminal.boot'),
     t('hero.terminal.orchestrated'),
     t('hero.terminal.online'),
     t('hero.terminal.ready'),
-  ])
+  ], [lang])
+  const termText = useTypewriter(terminalLines)
 
   const navLinks = [
     { label: t('nav.services'), href: '#services' },

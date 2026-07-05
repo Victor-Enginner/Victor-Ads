@@ -37,3 +37,6 @@ backend/dist
 *.njsproj
 *.sln
 *.sw?
+
+.vercel
+nul
