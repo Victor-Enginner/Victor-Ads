@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
   const { register } = useAuthStore();
+  const { t } = useTranslation();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,7 +23,7 @@ export default function RegisterPage() {
       await register(email, password, fullName, tenantName || undefined);
       navigate('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
+      setError(err instanceof Error ? err.message : t('register.error'));
     } finally {
       setLoading(false);
     }
@@ -38,8 +40,8 @@ export default function RegisterPage() {
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-10">
-          <h1 className="font-askan text-3xl text-white tracking-wide">Victor Ads</h1>
-          <p className="text-white/40 text-sm mt-2">Create your account</p>
+          <h1 className="font-askan text-3xl text-white tracking-wide">{t('register.title')}</h1>
+          <p className="text-white/40 text-sm mt-2">{t('register.subtitle')}</p>
         </div>
 
         {/* Form Card */}
@@ -52,31 +54,31 @@ export default function RegisterPage() {
             )}
 
             <div>
-              <label className="block text-white/60 text-xs mb-2 uppercase tracking-wider">Full Name</label>
+              <label className="block text-white/60 text-xs mb-2 uppercase tracking-wider">{t('register.name.label')}</label>
               <input
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 outline-none focus:border-white/30 transition-colors"
-                placeholder="Victor Borsari"
+                placeholder={t('register.name.placeholder')}
               />
             </div>
 
             <div>
-              <label className="block text-white/60 text-xs mb-2 uppercase tracking-wider">Email</label>
+              <label className="block text-white/60 text-xs mb-2 uppercase tracking-wider">{t('register.email.label')}</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 outline-none focus:border-white/30 transition-colors"
-                placeholder="you@example.com"
+                placeholder={t('register.email.placeholder')}
               />
             </div>
 
             <div>
-              <label className="block text-white/60 text-xs mb-2 uppercase tracking-wider">Password</label>
+              <label className="block text-white/60 text-xs mb-2 uppercase tracking-wider">{t('register.password.label')}</label>
               <input
                 type="password"
                 value={password}
@@ -84,20 +86,20 @@ export default function RegisterPage() {
                 required
                 minLength={8}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 outline-none focus:border-white/30 transition-colors"
-                placeholder="Min 8 characters"
+                placeholder={t('register.password.placeholder')}
               />
             </div>
 
             <div>
               <label className="block text-white/60 text-xs mb-2 uppercase tracking-wider">
-                Business Name <span className="text-white/20">(optional)</span>
+                {t('register.business.label')} <span className="text-white/20">{t('register.business.optional')}</span>
               </label>
               <input
                 type="text"
                 value={tenantName}
                 onChange={(e) => setTenantName(e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 outline-none focus:border-white/30 transition-colors"
-                placeholder="Clínica Sorriso"
+                placeholder={t('register.business.placeholder')}
               />
             </div>
 
@@ -106,15 +108,15 @@ export default function RegisterPage() {
               disabled={loading}
               className="w-full bg-white text-black font-medium text-sm py-3 rounded-xl hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
-              {loading ? 'Creating account...' : 'Create account'}
+              {loading ? t('register.submitting') : t('register.submit')}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-white/30 text-sm">
-              Already have an account?{' '}
+              {t('register.hasAccount')}{' '}
               <Link to="/login" className="text-white/70 hover:text-white transition-colors">
-                Sign in
+                {t('register.signIn')}
               </Link>
             </p>
           </div>
@@ -123,7 +125,7 @@ export default function RegisterPage() {
         {/* Back to home */}
         <div className="text-center mt-6">
           <Link to="/" className="text-white/20 text-xs hover:text-white/40 transition-colors">
-            ← Back to home
+            {t('register.backHome')}
           </Link>
         </div>
       </div>

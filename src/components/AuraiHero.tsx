@@ -1,24 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
-import { Menu, X, ArrowRight } from 'lucide-react'
+import { Menu, X, ArrowRight, Globe } from 'lucide-react'
 import { WHATSAPP_URL } from '../lib/contact'
-
-const navLinks = [
-  { label: 'Services', href: '#services' },
-  { label: 'Process', href: '#process' },
-  { label: 'Work', href: '#work' },
-  { label: 'Pricing', href: '#pricing' },
-  { label: 'Contact', href: '#contact' },
-]
-
-const pills = ['Workflow Automation', 'AI Chatbots', 'Content at Scale']
-
-const TERM_LINES = [
-  'booting victor.ai_os…',
-  '12 AI tools orchestrated',
-  'automation engine: online',
-  'system online · ready',
-]
+import { useTranslation } from '../i18n/LanguageContext'
 
 function BrandMark({ className }: { className?: string }) {
   return (
@@ -58,7 +42,21 @@ function useTypewriter(lines: string[], speed = 55, pause = 1400) {
 
 export default function AuraiHero() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const termText = useTypewriter(TERM_LINES)
+  const { t, lang, toggleLang } = useTranslation()
+  const termText = useTypewriter([
+    t('hero.terminal.boot'),
+    t('hero.terminal.orchestrated'),
+    t('hero.terminal.online'),
+    t('hero.terminal.ready'),
+  ])
+
+  const navLinks = [
+    { label: t('nav.services'), href: '#services' },
+    { label: t('nav.process'), href: '#process' },
+    { label: t('nav.work'), href: '#work' },
+    { label: t('nav.pricing'), href: '#pricing' },
+    { label: t('nav.contact'), href: '#contact' },
+  ]
 
   return (
     <section className="relative w-full min-h-screen overflow-hidden bg-ink">
@@ -105,11 +103,21 @@ export default function AuraiHero() {
                 {l.label}
               </a>
             ))}
+
+            {/* Language Toggle */}
+            <button
+              onClick={toggleLang}
+              className="flex items-center gap-1.5 text-white/60 hover:text-lime transition-colors text-sm px-3 py-1.5 rounded-full border border-white/10 hover:border-lime/40"
+              title={lang === 'en' ? 'Mudar para Português' : 'Switch to English'}
+            >
+              <Globe size={14} />
+              <span className="font-medium text-xs">{lang === 'en' ? 'PT' : 'EN'}</span>
+            </button>
           </div>
 
           <div className="flex items-center gap-3">
             <a href="/login" className="hidden sm:block text-white/70 text-sm hover:text-white transition-colors">
-              Log in
+              {t('nav.login')}
             </a>
             <a
               href={WHATSAPP_URL}
@@ -118,7 +126,7 @@ export default function AuraiHero() {
               className="hidden sm:inline-flex items-center gap-1.5 bg-lime text-ink font-bold text-sm px-5 py-2.5 rounded-full hover:brightness-110 transition-all"
               style={{ boxShadow: '0 0 28px rgba(158,255,0,0.25)' }}
             >
-              Let's talk
+              {t('nav.letsTalk')}
             </a>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -140,7 +148,7 @@ export default function AuraiHero() {
                 </a>
               ))}
               <a href="/login" className="text-white/85 text-sm" onClick={() => setMenuOpen(false)}>
-                Log in
+                {t('nav.login')}
               </a>
               <a
                 href={WHATSAPP_URL}
@@ -149,7 +157,7 @@ export default function AuraiHero() {
                 onClick={() => setMenuOpen(false)}
                 className="w-full text-center bg-lime text-ink font-bold text-sm px-6 py-3 rounded-full mt-1"
               >
-                Let's talk
+                {t('nav.letsTalk')}
               </a>
             </div>
           </div>
@@ -177,9 +185,9 @@ export default function AuraiHero() {
             className="flex flex-wrap gap-2.5 mb-6"
           >
             {[
-              { label: 'Claude Code', cyan: false },
-              { label: 'Make · n8n · Zapier', cyan: true },
-              { label: 'Multi-agent', cyan: false },
+              { label: t('hero.badge.claude'), cyan: false },
+              { label: t('hero.badge.make'), cyan: true },
+              { label: t('hero.badge.multiagent'), cyan: false },
             ].map((b) => (
               <span
                 key={b.label}
@@ -203,8 +211,8 @@ export default function AuraiHero() {
             transition={{ duration: 0.7, delay: 0.18 }}
             className="font-inter font-black text-white text-[2.6rem] sm:text-6xl lg:text-7xl leading-[0.98] tracking-tight drop-shadow-lg"
           >
-            Your business,<br />
-            <span className="text-gradient">on autopilot.</span>
+            {t('hero.title.line1')}<br />
+            <span className="text-gradient">{t('hero.title.line2')}</span>
           </motion.h1>
 
           <motion.p
@@ -213,8 +221,7 @@ export default function AuraiHero() {
             transition={{ duration: 0.7, delay: 0.26 }}
             className="text-white/70 text-base sm:text-lg max-w-xl leading-relaxed mt-6 drop-shadow"
           >
-            I'm Victor Ads. I design AI systems and automations that handle the
-            repetitive work — so a one-person business runs like a team of ten.
+            {t('hero.subtitle')}
           </motion.p>
 
           {/* CTAs */}
@@ -231,14 +238,14 @@ export default function AuraiHero() {
               className="btn-shine group inline-flex items-center justify-center gap-2 bg-lime text-ink font-bold text-sm px-7 py-3.5 rounded-full hover:brightness-110 transition-all"
               style={{ boxShadow: '0 0 34px rgba(158,255,0,0.3)' }}
             >
-              Book a free audit
+              {t('hero.cta.audit')}
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </a>
             <a
               href="#services"
               className="inline-flex items-center justify-center gap-2 bg-black/30 backdrop-blur-md border border-white/20 text-white text-sm px-7 py-3.5 rounded-full hover:bg-black/50 hover:border-lime/40 transition-all"
             >
-              See what I build
+              {t('hero.cta.seeWork')}
             </a>
           </motion.div>
 
@@ -249,7 +256,7 @@ export default function AuraiHero() {
             transition={{ duration: 0.7, delay: 0.44 }}
             className="flex flex-wrap gap-2.5 mt-9"
           >
-            {pills.map((p) => (
+            {[t('hero.pill.wf'), t('hero.pill.chatbots'), t('hero.pill.content')].map((p) => (
               <span
                 key={p}
                 className="font-mono bg-black/25 backdrop-blur-md text-white/60 text-xs px-3.5 py-1.5 rounded-full border border-white/10"

@@ -1,8 +1,10 @@
 import { motion } from 'motion/react'
 import { ArrowRight, Mail } from 'lucide-react'
 import { WHATSAPP_URL } from '../lib/contact'
+import { useTranslation } from '../i18n/LanguageContext'
 
 export default function CtaSection() {
+  const { t } = useTranslation()
   return (
     <section id="contact" className="relative bg-ink py-24 md:py-36 overflow-hidden">
       {/* Aurora blobs */}
@@ -18,13 +20,13 @@ export default function CtaSection() {
         transition={{ duration: 0.7 }}
         className="relative max-w-3xl mx-auto px-4 md:px-8 text-center"
       >
-        <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">Let's build</span>
+        <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('cta.tag')}</span>
         <h2 className="font-display text-4xl md:text-6xl lg:text-7xl mt-5 text-white leading-[1.05]">
-          Stop doing what<br />
-          <span className="text-gradient">AI can do for you.</span>
+          {t('cta.title.line1')}<br />
+          <span className="text-gradient">{t('cta.title.line2')}</span>
         </h2>
         <p className="text-white/50 text-base md:text-lg mt-6 max-w-xl mx-auto">
-          Tell me where your time disappears. I'll design the system that gives it back.
+          {t('cta.subtitle')}
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -35,7 +37,7 @@ export default function CtaSection() {
             className="btn-shine group inline-flex items-center gap-2 bg-lime text-ink font-bold text-sm px-7 py-3.5 rounded-full hover:brightness-110 transition-all"
             style={{ boxShadow: '0 0 34px rgba(158,255,0,0.3)' }}
           >
-            Book a free audit
+            {t('cta.cta.audit')}
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </a>
           <a
@@ -43,7 +45,7 @@ export default function CtaSection() {
             className="inline-flex items-center gap-2 border border-white/15 text-white/80 text-sm px-7 py-3.5 rounded-full hover:bg-white/5 transition-colors"
           >
             <Mail size={15} />
-            Send a message
+            {t('cta.cta.email')}
           </a>
         </div>
       </motion.div>

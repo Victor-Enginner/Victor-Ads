@@ -1,8 +1,10 @@
 import { useAuthStore } from '../../stores/authStore';
-import { LogOut, Bell } from 'lucide-react';
+import { LogOut, Bell, Globe } from 'lucide-react';
+import { useTranslation } from '../../i18n/LanguageContext';
 
 export default function Topbar() {
   const { user, logout } = useAuthStore();
+  const { t, lang, toggleLang } = useTranslation();
 
   return (
     <header className="h-16 bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6">
@@ -11,11 +13,21 @@ export default function Topbar() {
           {user?.tenant?.name || 'Dashboard'}
         </h2>
         <p className="text-white/30 text-xs">
-          {user?.tenant?.plan === 'pro' ? 'Pro Plan' : 'Starter Plan'} · {user?.tenant?.niche || 'dentist'}
+          {user?.tenant?.plan === 'pro' ? t('topbar.plan.pro') : t('topbar.plan.starter')} · {user?.tenant?.niche || 'dentist'}
         </p>
       </div>
 
       <div className="flex items-center gap-4">
+        {/* Language Toggle */}
+        <button
+          onClick={toggleLang}
+          className="flex items-center gap-1.5 p-2 rounded-xl text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors"
+          title={lang === 'en' ? 'Mudar para Português' : 'Switch to English'}
+        >
+          <Globe size={16} />
+          <span className="text-xs font-medium">{lang === 'en' ? 'PT' : 'EN'}</span>
+        </button>
+
         {/* Notifications */}
         <button className="relative p-2 rounded-xl text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors">
           <Bell size={18} />
@@ -39,7 +51,7 @@ export default function Topbar() {
         <button
           onClick={logout}
           className="p-2 rounded-xl text-white/30 hover:text-red-400 hover:bg-white/5 transition-colors"
-          title="Logout"
+          title={t('topbar.logout')}
         >
           <LogOut size={16} />
         </button>

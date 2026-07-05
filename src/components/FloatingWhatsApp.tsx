@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { WHATSAPP_URL } from '../lib/contact'
+import { useTranslation } from '../i18n/LanguageContext'
 
 function WhatsappIcon({ size = 26 }: { size?: number }) {
   return (
@@ -10,12 +11,13 @@ function WhatsappIcon({ size = 26 }: { size?: number }) {
 }
 
 export default function FloatingWhatsApp() {
+  const { t } = useTranslation()
   return (
     <motion.a
       href={WHATSAPP_URL}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Falar no WhatsApp"
+      aria-label={t('whatsapp.label')}
       initial={{ opacity: 0, scale: 0.6, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 1, ease: 'backOut' }}
@@ -25,7 +27,7 @@ export default function FloatingWhatsApp() {
     >
       {/* Hover label */}
       <span className="hidden sm:block mr-3 px-3 py-2 rounded-xl bg-ink-card border border-white/10 text-white text-sm font-medium whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shadow-xl">
-        Fala comigo 👋
+        {t('whatsapp.label')}
       </span>
 
       {/* Button */}

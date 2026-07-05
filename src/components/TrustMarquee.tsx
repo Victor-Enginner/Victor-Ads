@@ -3,11 +3,14 @@ const tools = [
   'ManyChat', 'ElevenLabs', 'Midjourney', 'HeyGen', 'Runway', 'Notion', 'Airtable',
 ]
 
+import { useTranslation } from '../i18n/LanguageContext'
+
 export default function TrustMarquee() {
+  const { t } = useTranslation()
   return (
     <section className="bg-ink border-y border-white/5 py-10 overflow-hidden">
       <p className="text-center text-white/30 text-[11px] uppercase tracking-[0.25em] mb-8">
-        Built on a best-in-class AI &amp; automation stack
+        {t('trust.label')}
       </p>
       <div className="marquee-mask">
         <div className="flex w-max animate-marquee">

@@ -1,41 +1,44 @@
 import { motion } from 'motion/react'
 import { Workflow, Sparkles, Bot, LineChart, Mic, ArrowUpRight } from 'lucide-react'
-
-const cards = [
-  {
-    icon: Workflow,
-    title: 'Workflow Automation',
-    desc: 'Custom pipelines on Make, n8n and Zapier that connect your tools and erase repetitive manual work — running 24/7 without you.',
-    span: 'md:col-span-2 md:row-span-2',
-    big: true,
-  },
-  {
-    icon: Bot,
-    title: 'AI Chatbots',
-    desc: 'Smart assistants on WhatsApp & Instagram that qualify leads and book meetings.',
-    span: '',
-  },
-  {
-    icon: Sparkles,
-    title: 'Content at Scale',
-    desc: 'Dozens of on-brand posts, scripts and articles generated in minutes.',
-    span: '',
-  },
-  {
-    icon: LineChart,
-    title: 'Data & Insights',
-    desc: 'AI reads your reports, transcribes calls and turns noise into action plans.',
-    span: '',
-  },
-  {
-    icon: Mic,
-    title: 'Voice & Video',
-    desc: 'Realistic voiceovers, AI avatars and auto-cut shorts from long content.',
-    span: '',
-  },
-]
+import { useTranslation } from '../i18n/LanguageContext'
 
 export default function ServicesSection() {
+  const { t } = useTranslation()
+
+  const cards = [
+    {
+      icon: Workflow,
+      title: t('services.card1.title'),
+      desc: t('services.card1.desc'),
+      span: 'md:col-span-2 md:row-span-2',
+      big: true,
+    },
+    {
+      icon: Bot,
+      title: t('services.card2.title'),
+      desc: t('services.card2.desc'),
+      span: '',
+    },
+    {
+      icon: Sparkles,
+      title: t('services.card3.title'),
+      desc: t('services.card3.desc'),
+      span: '',
+    },
+    {
+      icon: LineChart,
+      title: t('services.card4.title'),
+      desc: t('services.card4.desc'),
+      span: '',
+    },
+    {
+      icon: Mic,
+      title: t('services.card5.title'),
+      desc: t('services.card5.desc'),
+      span: '',
+    },
+  ]
+
   return (
     <section id="services" className="relative bg-ink py-24 md:py-32 overflow-hidden">
       <div className="absolute top-1/3 -left-40 w-96 h-96 rounded-full bg-neon-violet/10 blur-[120px]" />
@@ -47,10 +50,10 @@ export default function ServicesSection() {
           transition={{ duration: 0.6 }}
           className="mb-16 max-w-2xl"
         >
-          <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">What I build</span>
+          <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('services.tag')}</span>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl mt-4 text-white leading-[1.05]">
-            AI systems that run<br />
-            <span className="text-gradient">your business for you</span>
+            {t('services.title.line1')}<br />
+            <span className="text-gradient">{t('services.title.line2')}</span>
           </h2>
         </motion.div>
 

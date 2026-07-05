@@ -1,15 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
 import { Cpu } from 'lucide-react'
+import { useTranslation } from '../i18n/LanguageContext'
 
 const orbitTools = ['GPT', 'Claude', 'Make', 'n8n', 'Zapier', 'ElevenLabs', 'Midjourney', 'ManyChat']
-
-const stats = [
-  { to: 40, suffix: 'h+', label: 'Saved per month, per client' },
-  { to: 12, suffix: '', label: 'AI tools orchestrated' },
-  { to: 99, suffix: '%', label: 'Tasks fully automated' },
-  { to: 24, suffix: '/7', label: 'Systems running live' },
-]
 
 function Counter({ to, suffix }: { to: number; suffix: string }) {
   const ref = useRef<HTMLSpanElement>(null)
@@ -101,6 +95,15 @@ function Orbital() {
 }
 
 export default function SentinelSection() {
+  const { t } = useTranslation()
+
+  const stats = [
+    { to: 40, suffix: 'h+', label: t('sentinel.stat1') },
+    { to: 12, suffix: '', label: t('sentinel.stat2') },
+    { to: 99, suffix: '%', label: t('sentinel.stat3') },
+    { to: 24, suffix: '/7', label: t('sentinel.stat4') },
+  ]
+
   return (
     <section id="stack" className="relative bg-ink py-24 md:py-32 overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-neon-indigo/10 blur-[140px]" />
@@ -112,10 +115,10 @@ export default function SentinelSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">The engine</span>
+          <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('sentinel.tag')}</span>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl mt-4 text-white">
-            One operator.<br />
-            <span className="text-gradient">Infinite leverage.</span>
+            {t('sentinel.title.line1')}<br />
+            <span className="text-gradient">{t('sentinel.title.line2')}</span>
           </h2>
         </motion.div>
 

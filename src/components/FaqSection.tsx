@@ -1,32 +1,19 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Plus } from 'lucide-react'
-
-const faqs = [
-  {
-    q: 'Do I need to be technical to work with you?',
-    a: 'Not at all. You bring the problem — "I waste hours doing X" — and I design the system. You just press go and watch the manual work disappear.',
-  },
-  {
-    q: 'Which tools do you build on?',
-    a: 'Make, n8n and Zapier for automation; GPT, Claude and Gemini for intelligence; ManyChat for messaging; ElevenLabs, HeyGen and Midjourney for media. I pick the right stack for your case — no lock-in.',
-  },
-  {
-    q: 'How long does a project take?',
-    a: 'A single automation usually ships in a few days. A full Growth System takes 1–3 weeks depending on complexity. You see progress the whole way.',
-  },
-  {
-    q: 'What happens after it goes live?',
-    a: 'On a retainer I monitor, maintain and keep improving your systems. On a one-off project you get documentation and a support window so it keeps running smoothly.',
-  },
-  {
-    q: 'Is my data safe?',
-    a: 'Yes. I work within your own accounts and tools, follow least-privilege access, and never sell or repurpose your data. You stay in full control.',
-  },
-]
+import { useTranslation } from '../i18n/LanguageContext'
 
 export default function FaqSection() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState<number | null>(0)
+
+  const faqs = [
+    { q: t('faq.q1'), a: t('faq.a1') },
+    { q: t('faq.q2'), a: t('faq.a2') },
+    { q: t('faq.q3'), a: t('faq.a3') },
+    { q: t('faq.q4'), a: t('faq.a4') },
+    { q: t('faq.q5'), a: t('faq.a5') },
+  ]
 
   return (
     <section id="faq" className="bg-ink-soft py-24 md:py-32">
@@ -38,9 +25,9 @@ export default function FaqSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-14"
         >
-          <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">FAQ</span>
+          <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('faq.tag')}</span>
           <h2 className="font-display text-4xl md:text-5xl mt-4 text-white">
-            Questions, <span className="text-gradient">answered</span>
+            {t('faq.title.line1')} <span className="text-gradient">{t('faq.title.line2')}</span>
           </h2>
         </motion.div>
 

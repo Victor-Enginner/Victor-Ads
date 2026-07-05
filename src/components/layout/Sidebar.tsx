@@ -1,20 +1,22 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, MessageSquare, Users, Calendar, Settings, FileText, CreditCard, ChevronLeft, ChevronRight } from 'lucide-react';
-
-const navItems = [
-  { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
-  { icon: MessageSquare, label: 'Chat', href: '/dashboard/chat' },
-  { icon: Users, label: 'Contacts', href: '/dashboard/contacts' },
-  { icon: Calendar, label: 'Appointments', href: '/dashboard/appointments' },
-  { icon: FileText, label: 'Knowledge Base', href: '/dashboard/knowledge' },
-  { icon: CreditCard, label: 'Billing', href: '/dashboard/billing' },
-  { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
-];
+import { useTranslation } from '../../i18n/LanguageContext';
 
 export default function Sidebar() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const { t } = useTranslation();
+
+  const navItems = [
+    { icon: LayoutDashboard, label: t('sidebar.overview'), href: '/dashboard' },
+    { icon: MessageSquare, label: t('sidebar.chat'), href: '/dashboard/chat' },
+    { icon: Users, label: t('sidebar.contacts'), href: '/dashboard/contacts' },
+    { icon: Calendar, label: t('sidebar.appointments'), href: '/dashboard/appointments' },
+    { icon: FileText, label: t('sidebar.knowledge'), href: '/dashboard/knowledge' },
+    { icon: CreditCard, label: t('sidebar.billing'), href: '/dashboard/billing' },
+    { icon: Settings, label: t('sidebar.settings'), href: '/dashboard/settings' },
+  ];
 
   return (
     <aside

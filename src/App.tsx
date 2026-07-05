@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuthStore } from './stores/authStore';
+import { LanguageProvider } from './i18n/LanguageContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import DashboardLayout from './components/layout/DashboardLayout';
 import AuraiHero from './components/AuraiHero';
@@ -16,6 +17,7 @@ import PricingSection from './components/PricingSection';
 import FaqSection from './components/FaqSection';
 import CtaSection from './components/CtaSection';
 import Footer from './components/Footer';
+import { Toast } from './components/Toast';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -66,7 +68,9 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
+      <LanguageProvider>
+        <Toast />
+        <Routes>
         {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -93,6 +97,7 @@ export default function App() {
         {/* Catch all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }

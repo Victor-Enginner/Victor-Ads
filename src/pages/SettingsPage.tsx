@@ -1,172 +1,167 @@
 import { useState } from 'react';
-import { Building2, Clock, Wrench, Plug, User } from 'lucide-react';
-import BusinessHours from '../components/dashboard/BusinessHours';
-import ServicesManager from '../components/dashboard/ServicesManager';
-import Integrations from '../components/dashboard/Integrations';
+import { useAuthStore } from '../stores/authStore';
+import { useToastStore } from '../stores/toastStore';
+import { User, Building2, Bell, Shield, Palette, Globe, LogOut } from 'lucide-react';
 
-type Tab = 'general' | 'hours' | 'services' | 'integrations' | 'account';
-
-const tabs: { key: Tab; label: string; icon: typeof Building2 }[] = [
-  { key: 'general', label: 'General', icon: Building2 },
-  { key: 'hours', label: 'Business Hours', icon: Clock },
-  { key: 'services', label: 'Services', icon: Wrench },
-  { key: 'integrations', label: 'Integrations', icon: Plug },
-  { key: 'account', label: 'Account', icon: User },
-];
+type Tab = 'profile' | 'clinic' | 'notifications' | 'security';
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<Tab>('general');
-  const [tenantName, setTenantName] = useState('Clínica Sorriso');
-  const [niche, setNiche] = useState('dentist');
-  const [saved, setSaved] = useState(false);
+  const { user, logout } = useAuthStore();
+  const { addToast } = useToastStore();
+  const [activeTab, setActiveTab] = useState<Tab>('profile');
+  const [saving, setSaving] = useState(false);
 
-  function handleSave() {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  const tabs = [
+    { id: 'profile' as Tab, label: 'Profile', icon: User },
+    { id: 'clinic' as Tab, label: 'Clinic', icon: Building2 },
+    { id: 'notifications' as Tab, label: 'Notifications', icon: Bell },
+    { id: 'security' as Tab, label: 'Security', icon: Shield },
+  ];
+
+  async function handleSave() {
+    setSaving(true);
+    try {
+      // TODO: Call API to update settings
+      await new Promise(resolve => setTimeout(resolve, 500));
+      addToast({ type: 'success', message: 'Settings saved successfully' });
+    } catch {
+      addToast({ type: 'error', message: 'Failed to save settings' });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handleLogout() {
+    logout();
+    addToast({ type: 'info', message: 'Logged out successfully' });
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-askan text-white">Settings</h1>
-          <p className="text-white/40 text-sm mt-1">Configure your workspace</p>
-        </div>
-        <button
-          onClick={handleSave}
-          className="px-5 py-2 bg-white text-black text-xs font-medium rounded-xl hover:bg-white/90 transition-colors"
-        >
-          {saved ? '✓ Saved' : 'Save changes'}
-        </button>
+    <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-white text-xl font-semibold">Settings</h1>
+        <p className="text-white/40 text-sm mt-1">
+          Manage your account and preferences
+        </p>
       </div>
 
-      <div className="flex gap-8">
-        {/* Sidebar tabs */}
-        <nav className="w-48 shrink-0">
-          <div className="space-y-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs transition-colors text-left ${
-                  activeTab === tab.key
-                    ? 'bg-white/10 text-white'
-                    : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-                }`}
-              >
-                <tab.icon size={14} />
-                {tab.label}
-              </button>
-            ))}
+      <div className="flex gap-1 mb-6 bg-white/5 p-1 rounded-xl w-fit">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-colors ${
+                activeTab === tab.id
+                  ? 'bg-white/10 text-white'
+                  : 'text-white/40 hover:text-white/60'
+              }`}
+            >
+              <Icon size={14} />
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+        {activeTab === 'profile' && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-white/40 text-xs uppercase tracking-wider mb-2">Full Name</label>
+              <input
+                type="text"
+                defaultValue={user?.fullName}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-white/20"
+              />
+            </div>
+            <div>
+              <label className="block text-white/40 text-xs uppercase tracking-wider mb-2">Email</label>
+              <input
+                type="email"
+                defaultValue={user?.email}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-white/20"
+              />
+            </div>
           </div>
-        </nav>
+        )}
 
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6">
-            {activeTab === 'general' && (
-              <div className="space-y-6">
-                <h4 className="text-white text-sm font-medium mb-4">General Settings</h4>
-
-                <div>
-                  <label className="block text-white/40 text-[10px] uppercase tracking-wider mb-2">
-                    Business Name
-                  </label>
-                  <input
-                    type="text"
-                    value={tenantName}
-                    onChange={(e) => setTenantName(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-white/20 transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white/40 text-[10px] uppercase tracking-wider mb-2">
-                    Niche
-                  </label>
-                  <select
-                    value={niche}
-                    onChange={(e) => setNiche(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-white/20 transition-colors appearance-none"
-                  >
-                    <option value="dentist" className="bg-[#0a0a0a]">Dentist / Clinic</option>
-                    <option value="restaurant" className="bg-[#0a0a0a]">Restaurant</option>
-                    <option value="lawyer" className="bg-[#0a0a0a]">Lawyer</option>
-                    <option value="architect" className="bg-[#0a0a0a]">Architect</option>
-                    <option value="content-producer" className="bg-[#0a0a0a]">Content Producer</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-white/40 text-[10px] uppercase tracking-wider mb-2">
-                    WhatsApp Number
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="+55 11 99999-9999"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-white/20 outline-none focus:border-white/20 transition-colors"
-                  />
-                  <p className="text-white/15 text-[10px] mt-1.5">
-                    This number will be used to receive WhatsApp messages
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'hours' && <BusinessHours />}
-            {activeTab === 'services' && <ServicesManager />}
-            {activeTab === 'integrations' && <Integrations />}
-
-            {activeTab === 'account' && (
-              <div className="space-y-6">
-                <h4 className="text-white text-sm font-medium mb-4">Account Settings</h4>
-
-                <div>
-                  <label className="block text-white/40 text-[10px] uppercase tracking-wider mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    defaultValue="Victor Borsari"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-white/20 transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white/40 text-[10px] uppercase tracking-wider mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    defaultValue="victor@aurai.com"
-                    disabled
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white/30 text-sm outline-none cursor-not-allowed"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white/40 text-[10px] uppercase tracking-wider mb-2">
-                    Current Plan
-                  </label>
-                  <div className="flex items-center gap-3">
-                    <span className="text-white text-xs bg-white/10 px-3 py-1.5 rounded-full">
-                      Starter (Free)
-                    </span>
-                    <button className="text-[10px] text-white/50 hover:text-white/80 transition-colors">
-                      Upgrade to Pro →
-                    </button>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-white/5">
-                  <button className="text-red-400 text-xs hover:text-red-300 transition-colors">
-                    Delete account
-                  </button>
-                </div>
-              </div>
-            )}
+        {activeTab === 'clinic' && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-white/40 text-xs uppercase tracking-wider mb-2">Clinic Name</label>
+              <input
+                type="text"
+                placeholder={user?.tenant?.name || 'My Clinic'}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-white/20"
+              />
+            </div>
+            <div>
+              <label className="block text-white/40 text-xs uppercase tracking-wider mb-2">WhatsApp Number</label>
+              <input
+                type="text"
+                placeholder="+1234567890"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-white/20"
+              />
+            </div>
           </div>
+        )}
+
+        {activeTab === 'notifications' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white text-sm">Email Notifications</p>
+                <p className="text-white/30 text-xs">Receive email updates</p>
+              </div>
+              <input type="checkbox" defaultChecked className="w-4 h-4" />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white text-sm">Appointment Reminders</p>
+                <p className="text-white/30 text-xs">Send reminders to patients</p>
+              </div>
+              <input type="checkbox" defaultChecked className="w-4 h-4" />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'security' && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-white/40 text-xs uppercase tracking-wider mb-2">Current Password</label>
+              <input
+                type="password"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-white/20"
+              />
+            </div>
+            <div>
+              <label className="block text-white/40 text-xs uppercase tracking-wider mb-2">New Password</label>
+              <input
+                type="password"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-white/20"
+              />
+            </div>
+          </div>
+        )}
+
+        <div className="flex justify-between mt-6 pt-6 border-t border-white/5">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 py-2 text-red-400 hover:bg-red-500/10 rounded-lg text-sm transition-colors"
+          >
+            <LogOut size={16} />
+            Logout
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="px-6 py-2 bg-white text-black rounded-lg text-sm font-medium hover:bg-white/90 disabled:opacity-50 flex items-center gap-2"
+          >
+            {saving && <span className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />}
+            Save Changes
+          </button>
         </div>
       </div>
     </div>

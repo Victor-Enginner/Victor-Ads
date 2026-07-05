@@ -2,35 +2,37 @@ import { useState } from 'react'
 import { motion } from 'motion/react'
 import { Check } from 'lucide-react'
 import { WHATSAPP_URL } from '../lib/contact'
+import { useTranslation } from '../i18n/LanguageContext'
 
 type Mode = 'project' | 'retainer'
 
-const plans = [
-  {
-    name: 'Starter',
-    tagline: 'One workflow, fully automated',
-    price: { project: '$490', retainer: '$190' },
-    highlight: false,
-    features: ['1 automation built', 'Up to 3 tools connected', 'Documentation included', '14 days of support'],
-  },
-  {
-    name: 'Growth System',
-    tagline: 'A full AI operation for your business',
-    price: { project: '$1,490', retainer: '$590' },
-    highlight: true,
-    features: ['Up to 5 automations', 'AI chatbot setup', 'Content generation flow', 'Monitoring & tweaks', 'Priority support'],
-  },
-  {
-    name: 'Partner',
-    tagline: 'I become your automation team',
-    price: { project: 'Custom', retainer: '$1,200' },
-    highlight: false,
-    features: ['Unlimited automations', 'Dedicated strategy calls', 'Custom AI integrations', 'Same-day support', 'Quarterly roadmap'],
-  },
-]
-
 export default function PricingSection() {
+  const { t } = useTranslation()
   const [mode, setMode] = useState<Mode>('retainer')
+
+  const plans = [
+    {
+      name: t('pricing.plan1.name'),
+      tagline: t('pricing.plan1.tagline'),
+      price: { project: '$490', retainer: '$190' },
+      highlight: false,
+      features: [t('pricing.feature1.plan1'), t('pricing.feature2.plan1'), t('pricing.feature3.plan1'), t('pricing.feature4.plan1')],
+    },
+    {
+      name: t('pricing.plan2.name'),
+      tagline: t('pricing.plan2.tagline'),
+      price: { project: '$1,490', retainer: '$590' },
+      highlight: true,
+      features: [t('pricing.feature1.plan2'), t('pricing.feature2.plan2'), t('pricing.feature3.plan2'), t('pricing.feature4.plan2'), t('pricing.feature5.plan2')],
+    },
+    {
+      name: t('pricing.plan3.name'),
+      tagline: t('pricing.plan3.tagline'),
+      price: { project: t('pricing.custom'), retainer: '$1,200' },
+      highlight: false,
+      features: [t('pricing.feature1.plan3'), t('pricing.feature2.plan3'), t('pricing.feature3.plan3'), t('pricing.feature4.plan3'), t('pricing.feature5.plan3')],
+    },
+  ]
 
   return (
     <section id="pricing" className="relative bg-ink py-24 md:py-32 overflow-hidden">
@@ -43,9 +45,9 @@ export default function PricingSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-10"
         >
-          <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">Pricing</span>
+          <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('pricing.tag')}</span>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl mt-4 text-white">
-            Invest once, <span className="text-gradient">save forever</span>
+            {t('pricing.title.line1')} <span className="text-gradient">{t('pricing.title.line2')}</span>
           </h2>
         </motion.div>
 
@@ -60,7 +62,7 @@ export default function PricingSection() {
                   mode === m ? 'text-white' : 'text-white/40 hover:text-white/70'
                 }`}
               >
-                {m === 'retainer' ? 'Monthly retainer' : 'One-off project'}
+                {m === 'retainer' ? t('pricing.toggle.retainer') : t('pricing.toggle.project')}
               </button>
             ))}
             <motion.div
@@ -88,15 +90,15 @@ export default function PricingSection() {
             >
               {plan.highlight && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-neon-violet to-neon-cyan text-white text-[10px] uppercase tracking-wider px-3 py-1 rounded-full">
-                  Most popular
+                  {t('pricing.popular')}
                 </span>
               )}
               <h3 className="font-display text-2xl text-white">{plan.name}</h3>
               <p className="text-white/40 text-xs mt-1">{plan.tagline}</p>
               <div className="mt-6 flex items-baseline gap-1">
                 <span className="font-display text-5xl text-white">{plan.price[mode]}</span>
-                {plan.price[mode] !== 'Custom' && (
-                  <span className="text-white/40 text-sm">{mode === 'retainer' ? '/mo' : ' once'}</span>
+                {plan.price[mode] !== t('pricing.custom') && (
+                  <span className="text-white/40 text-sm">{mode === 'retainer' ? t('pricing.perMonth') : t('pricing.once')}</span>
                 )}
               </div>
               <ul className="mt-8 space-y-3 flex-1">
@@ -117,7 +119,7 @@ export default function PricingSection() {
                     : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
                 }`}
               >
-                Get started
+                {t('pricing.cta')}
               </a>
             </motion.div>
           ))}

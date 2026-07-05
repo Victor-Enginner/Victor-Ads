@@ -1,38 +1,41 @@
 import { motion } from 'motion/react'
 import { Search, Cog, Rocket } from 'lucide-react'
-
-const steps = [
-  {
-    icon: Search,
-    step: '01',
-    title: 'Map the bottleneck',
-    desc: 'We audit your day and find the repetitive, time-draining tasks that AI and automation can eliminate.',
-  },
-  {
-    icon: Cog,
-    step: '02',
-    title: 'Build the system',
-    desc: 'I design and wire a custom AI workflow — connecting your tools into one machine that runs on autopilot.',
-  },
-  {
-    icon: Rocket,
-    step: '03',
-    title: 'Ship & scale',
-    desc: 'It goes live, I monitor and refine it, and you reclaim hours every week while output goes up.',
-  },
-]
-
-const termLines = [
-  { pfx: '$', cls: 'text-lime', txt: 'victor init automation --client "you"' },
-  { pfx: '→', cls: 'text-white/40', txt: 'mapping repetitive tasks...' },
-  { pfx: '✓', cls: 'text-mint', txt: '7 workflows identified' },
-  { pfx: '$', cls: 'text-lime', txt: 'build --ai claude --connect make,n8n' },
-  { pfx: '→', cls: 'text-white/40', txt: 'wiring tools together...' },
-  { pfx: '✓', cls: 'text-mint', txt: 'system deployed · running 24/7' },
-  { pfx: '◇', cls: 'text-lime font-bold', txt: 'you just got 40h / month back' },
-]
+import { useTranslation } from '../i18n/LanguageContext'
 
 export default function HowItWorks() {
+  const { t } = useTranslation()
+
+  const steps = [
+    {
+      icon: Search,
+      step: '01',
+      title: t('process.step1.title'),
+      desc: t('process.step1.desc'),
+    },
+    {
+      icon: Cog,
+      step: '02',
+      title: t('process.step2.title'),
+      desc: t('process.step2.desc'),
+    },
+    {
+      icon: Rocket,
+      step: '03',
+      title: t('process.step3.title'),
+      desc: t('process.step3.desc'),
+    },
+  ]
+
+  const termLines = [
+    { pfx: '$', cls: 'text-lime', txt: t('process.term.init') },
+    { pfx: '→', cls: 'text-white/40', txt: t('process.term.mapping') },
+    { pfx: '✓', cls: 'text-mint', txt: t('process.term.identified') },
+    { pfx: '$', cls: 'text-lime', txt: t('process.term.build') },
+    { pfx: '→', cls: 'text-white/40', txt: t('process.term.wiring') },
+    { pfx: '✓', cls: 'text-mint', txt: t('process.term.deployed') },
+    { pfx: '◇', cls: 'text-lime font-bold', txt: t('process.term.result') },
+  ]
+
   return (
     <section id="process" className="relative bg-ink-soft py-24 md:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-grid opacity-40" />
@@ -44,9 +47,9 @@ export default function HowItWorks() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">The process</span>
+          <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('process.tag')}</span>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl mt-4 text-white">
-            From chaos to <span className="text-gradient">autopilot</span>
+            {t('process.title.line1')} <span className="text-gradient">{t('process.title.line2')}</span>
           </h2>
         </motion.div>
 

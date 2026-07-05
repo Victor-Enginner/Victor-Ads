@@ -1,13 +1,6 @@
 import { Github, Instagram, Linkedin, Twitter } from 'lucide-react'
 import { WHATSAPP_URL, PHONE_DISPLAY } from '../lib/contact'
-
-const nav = [
-  { label: 'Services', href: '#services' },
-  { label: 'Process', href: '#process' },
-  { label: 'Work', href: '#work' },
-  { label: 'Pricing', href: '#pricing' },
-  { label: 'FAQ', href: '#faq' },
-]
+import { useTranslation } from '../i18n/LanguageContext'
 
 const socials = [
   { icon: Instagram, href: '#' },
@@ -17,6 +10,16 @@ const socials = [
 ]
 
 export default function Footer() {
+  const { t } = useTranslation()
+
+  const nav = [
+    { label: t('footer.nav.services'), href: '#services' },
+    { label: t('footer.nav.process'), href: '#process' },
+    { label: t('footer.nav.work'), href: '#work' },
+    { label: t('footer.nav.pricing'), href: '#pricing' },
+    { label: t('footer.nav.faq'), href: '#faq' },
+  ]
+
   return (
     <footer className="bg-ink border-t border-white/8 pt-16 pb-10">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
@@ -30,7 +33,7 @@ export default function Footer() {
               <span className="font-display text-xl text-white">Victor Ads</span>
             </div>
             <p className="text-white/40 text-sm mt-4 leading-relaxed">
-              AI systems &amp; automation for one-person businesses. I build the machine — you run the business.
+              {t('footer.brand.desc')}
             </p>
             <div className="flex items-center gap-3 mt-6">
               {socials.map((s, i) => (
@@ -48,7 +51,7 @@ export default function Footer() {
           {/* Nav */}
           <div className="flex gap-16">
             <div>
-              <p className="text-white/30 text-[11px] uppercase tracking-wider mb-4">Navigate</p>
+              <p className="text-white/30 text-[11px] uppercase tracking-wider mb-4">{t('footer.nav.title')}</p>
               <ul className="space-y-3">
                 {nav.map((n) => (
                   <li key={n.label}>
@@ -60,7 +63,7 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <p className="text-white/30 text-[11px] uppercase tracking-wider mb-4">Get in touch</p>
+              <p className="text-white/30 text-[11px] uppercase tracking-wider mb-4">{t('footer.contact.title')}</p>
               <ul className="space-y-3">
                 <li>
                   <a
@@ -69,17 +72,17 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     className="text-white/55 text-sm hover:text-lime transition-colors"
                   >
-                    WhatsApp · {PHONE_DISPLAY}
+                    {t('footer.contact.whatsapp', { phone: PHONE_DISPLAY })}
                   </a>
                 </li>
                 <li>
                   <a href="mailto:shoponsup@gmail.com" className="text-white/55 text-sm hover:text-white transition-colors">
-                    Email
+                    {t('footer.contact.email')}
                   </a>
                 </li>
                 <li>
                   <a href="/login" className="text-white/55 text-sm hover:text-white transition-colors">
-                    Client login
+                    {t('footer.contact.login')}
                   </a>
                 </li>
               </ul>
@@ -88,8 +91,8 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 pt-6 border-t border-white/8 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-white/30 text-xs">© 2026 Victor Ads. All rights reserved.</p>
-          <p className="text-white/25 text-xs">Built with AI, shipped by a human.</p>
+          <p className="text-white/30 text-xs">{t('footer.copyright')}</p>
+          <p className="text-white/25 text-xs">{t('footer.tagline')}</p>
         </div>
       </div>
     </footer>

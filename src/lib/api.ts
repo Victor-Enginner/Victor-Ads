@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 interface RequestOptions extends RequestInit {
   token?: string;
@@ -6,21 +6,31 @@ interface RequestOptions extends RequestInit {
 
 class ApiClient {
   private baseUrl: string;
+  private refreshPromise: Promise<string> | null = null;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
   }
+ private _getAccessToken(): string | null {
+  // Use getter via zustand
+  return null;
+}
 
-  private async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-    const { token, ...fetchOptions } = options;
+  private async request<T>(
+    endpoint: string,
+    options: RequestOptions = {}
+  ): Promise<T> {
+    const { token: initialToken, ...fetchOptions } = options;
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...(options.headers as Record<string, string> || {}),
     };
 
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+    let accessToken = initialToken || localStorage.getItem('accessToken');
+
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
     }
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
@@ -31,10 +41,69 @@ class ApiClient {
     const data = await response.json();
 
     if (!response.ok) {
+      // Se 401 e não for rota de auth, tenta refresh
+      if (response.status === 401 && !endpoint.includes('/auth/') && !endpoint.includes('/auth/refresh')) {
+        try {
+          const newToken = await this.refreshAccessToken();
+          headers['Authorization'] = `Bearer ${newToken}`;
+
+          // Retry
+          const retry = await fetch(`${this.baseUrl}${endpoint}`, {
+            ...fetchOptions,
+            headers,
+          });
+
+          const retryData = await retry.json();
+
+          if (!retry.ok) {
+            throw new Error(retryData.error || `HTTP ${retry.status}`);
+          }
+
+          return retryData as T;
+        } catch {
+          // Refresh falhou, redirecionar para login
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          window.location.href = '/login';
+          throw new Error('Session expired');
+        }
+      }
+
       throw new Error(data.error || `HTTP ${response.status}`);
     }
 
     return data as T;
+  }
+
+  private async refreshAccessToken(): Promise<string> {
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    if (!refreshToken) {
+      throw new Error('No refresh token');
+    }
+
+    // Se já está fazendo refresh, esperar a promise existente
+    if (this.refreshPromise) {
+      return this.refreshPromise.then(t => t);
+    }
+
+    this.refreshPromise = (async () => {
+      try {
+        const data = await this.post<{ accessToken: string; refreshToken: string }>(
+          '/api/auth/refresh',
+          { refreshToken }
+        );
+
+        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('refreshToken', data.refreshToken);
+
+        return data.accessToken;
+      } finally {
+        this.refreshPromise = null;
+      }
+    })();
+
+    return this.refreshPromise;
   }
 
   get<T>(endpoint: string, token?: string) {

@@ -1,9 +1,12 @@
 import { motion } from 'motion/react'
 import { Plus, FolderGit2 } from 'lucide-react'
-
-const categories = ['Automation', 'AI Chatbot', 'Content System']
+import { useTranslation } from '../i18n/LanguageContext'
 
 export default function PortfolioSection() {
+  const { t } = useTranslation()
+
+  const categories = [t('portfolio.cat.automation'), t('portfolio.cat.chatbot'), t('portfolio.cat.content')]
+
   return (
     <section id="work" className="relative bg-ink-soft py-24 md:py-32 overflow-hidden">
       <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-neon-cyan/8 blur-[120px]" />
@@ -16,13 +19,13 @@ export default function PortfolioSection() {
           className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14"
         >
           <div>
-            <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">Selected work</span>
+            <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('portfolio.tag')}</span>
             <h2 className="font-display text-4xl md:text-5xl lg:text-6xl mt-4 text-white">
-              Case studies,<br /><span className="text-gradient">coming soon</span>
+              {t('portfolio.title.line1')}<br /><span className="text-gradient">{t('portfolio.title.line2')}</span>
             </h2>
           </div>
           <p className="text-white/40 text-sm max-w-sm">
-            Real systems I've shipped will live here. The slots are ready — the results are on the way.
+            {t('portfolio.desc')}
           </p>
         </motion.div>
 
@@ -41,7 +44,7 @@ export default function PortfolioSection() {
                 <FolderGit2 size={22} className="text-white/30 group-hover:text-neon-violet transition-colors" />
               </div>
               <span className="text-[10px] uppercase tracking-[0.2em] text-neon-violet/70 mb-2">{cat}</span>
-              <p className="text-white/50 text-sm">Project coming soon</p>
+              <p className="text-white/50 text-sm">{t('portfolio.comingSoon')}</p>
               <div className="mt-5 w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/30 group-hover:text-white/70 group-hover:border-white/30 transition-colors">
                 <Plus size={16} />
               </div>
