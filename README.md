@@ -1,4 +1,4 @@
-# Site Monstro - Portfolio Digital
+# Victor AI - Portfolio Digital
 
 Portfólio digital moderno construído com React, TypeScript e Vite. Este projeto inclui uma landing page profissional com sistema de dashboard para gerenciamento de contatos, agendamentos e chat.
 
@@ -29,8 +29,8 @@ Portfólio digital moderno construído com React, TypeScript e Vite. Este projet
 
 1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/site-monstro.git
-cd site-monstro
+git clone https://github.com/seu-usuario/victor-ai.git
+cd victor-ai
 ```
 
 2. Instale as dependências do frontend:
@@ -82,7 +82,7 @@ npm run dev
 ## 📁 Estrutura do Projeto
 
 ```
-site-monstro/
+victor-ai/
 ├── src/                 # Código fonte React
 │   ├── components/      # Componentes reutilizáveis
 │   ├── pages/          # Páginas da aplicação
@@ -122,4 +122,4 @@ Este projeto é privado e pertence ao proprietário.
 
 ## 👤 Autor
 
-Seu Nome - Portfolio Digital
+Victor - Victor AI
