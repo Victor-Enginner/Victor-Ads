@@ -23,7 +23,8 @@ export default function FloatingWhatsApp() {
       transition={{ duration: 0.4, delay: 1, ease: 'backOut' }}
       whileHover={{ scale: 1.06 }}
       whileTap={{ scale: 0.95 }}
-      className="group fixed bottom-5 right-5 sm:bottom-7 sm:right-7 z-[90] flex items-center"
+      className="group fixed right-4 sm:right-7 z-[70] flex items-center"
+      style={{ bottom: 'calc(env(safe-area-inset-bottom) + 1.25rem)' }}
     >
       {/* Hover label */}
       <span className="hidden sm:block mr-3 px-3 py-2 rounded-xl bg-ink-card border border-white/10 text-white text-sm font-medium whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shadow-xl">
@@ -31,7 +32,7 @@ export default function FloatingWhatsApp() {
       </span>
 
       {/* Button */}
-      <span className="relative flex items-center justify-center w-11 h-11 rounded-full bg-[#25D366] text-white shadow-lg" style={{ boxShadow: '0 8px 24px rgba(37,211,102,0.45)' }}>
+      <span className="relative flex items-center justify-center w-12 h-12 sm:w-11 sm:h-11 rounded-full bg-[#25D366] text-white shadow-lg" style={{ boxShadow: '0 8px 24px rgba(37,211,102,0.45)' }}>
         {/* pulsing ring */}
         <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-60 animate-ping" />
         <span className="relative">

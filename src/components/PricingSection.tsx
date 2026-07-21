@@ -35,7 +35,7 @@ export default function PricingSection() {
   ]
 
   return (
-    <section id="pricing" className="relative bg-ink py-24 md:py-32 overflow-hidden">
+    <section id="pricing" className="relative bg-ink py-16 sm:py-24 md:py-32 overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-neon-violet/8 blur-[140px]" />
       <div className="relative max-w-7xl mx-auto px-4 md:px-8">
         <motion.div
@@ -46,7 +46,7 @@ export default function PricingSection() {
           className="text-center mb-10"
         >
           <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('pricing.tag')}</span>
-          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl mt-4 text-white">
+          <h2 className="font-display text-[2.1rem] sm:text-4xl md:text-5xl lg:text-6xl mt-4 text-balance text-white">
             {t('pricing.title.line1')} <span className="text-gradient">{t('pricing.title.line2')}</span>
           </h2>
         </motion.div>
@@ -82,7 +82,7 @@ export default function PricingSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`relative rounded-3xl p-8 flex flex-col ${
+              className={`relative rounded-3xl p-6 sm:p-8 flex flex-col ${
                 plan.highlight
                   ? 'glow-border bg-ink-card border border-neon-violet/30 md:-translate-y-3'
                   : 'bg-white/[0.02] border border-white/8'
@@ -96,7 +96,7 @@ export default function PricingSection() {
               <h3 className="font-display text-2xl text-white">{plan.name}</h3>
               <p className="text-white/40 text-xs mt-1">{plan.tagline}</p>
               <div className="mt-6 flex items-baseline gap-1">
-                <span className="font-display text-5xl text-white">{plan.price[mode]}</span>
+                <span className="font-display text-4xl sm:text-5xl text-white">{plan.price[mode]}</span>
                 {plan.price[mode] !== t('pricing.custom') && (
                   <span className="text-white/40 text-sm">{mode === 'retainer' ? t('pricing.perMonth') : t('pricing.once')}</span>
                 )}

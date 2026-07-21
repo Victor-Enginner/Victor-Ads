@@ -8,7 +8,7 @@ export default function PortfolioSection() {
   const categories = [t('portfolio.cat.automation'), t('portfolio.cat.chatbot'), t('portfolio.cat.content')]
 
   return (
-    <section id="work" className="relative bg-ink-soft py-24 md:py-32 overflow-hidden">
+    <section id="work" className="relative bg-ink-soft py-16 sm:py-24 md:py-32 overflow-hidden">
       <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-neon-cyan/8 blur-[120px]" />
       <div className="relative max-w-7xl mx-auto px-4 md:px-8">
         <motion.div
@@ -20,7 +20,7 @@ export default function PortfolioSection() {
         >
           <div>
             <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('portfolio.tag')}</span>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl mt-4 text-white">
+            <h2 className="font-display text-[2.1rem] sm:text-4xl md:text-5xl lg:text-6xl mt-4 text-balance text-white">
               {t('portfolio.title.line1')}<br /><span className="text-gradient">{t('portfolio.title.line2')}</span>
             </h2>
           </div>
@@ -38,7 +38,7 @@ export default function PortfolioSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="glow-border group relative rounded-2xl border border-dashed border-white/12 bg-white/[0.015] aspect-[4/5] flex flex-col items-center justify-center text-center p-8 overflow-hidden"
+              className="glow-border group relative rounded-2xl border border-dashed border-white/12 bg-white/[0.015] aspect-[16/10] sm:aspect-[4/5] flex flex-col items-center justify-center text-center p-6 sm:p-8 overflow-hidden"
             >
               <div className="w-14 h-14 rounded-2xl bg-ink-card border border-white/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                 <FolderGit2 size={22} className="text-white/30 group-hover:text-neon-violet transition-colors" />

@@ -1,16 +1,8 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { motion } from 'motion/react'
-import { Menu, X, ArrowRight, Globe } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { WHATSAPP_URL } from '../lib/contact'
 import { useTranslation } from '../i18n/LanguageContext'
-
-function BrandMark({ className }: { className?: string }) {
-  return (
-    <div className={`rounded-lg bg-gradient-to-br from-lime to-mint flex items-center justify-center ${className}`}>
-      <span className="font-mono text-ink text-sm font-extrabold">V</span>
-    </div>
-  )
-}
 
 function useTypewriter(lines: string[], speed = 55, pause = 1400) {
   const [text, setText] = useState('')
@@ -40,33 +32,74 @@ function useTypewriter(lines: string[], speed = 55, pause = 1400) {
   return text
 }
 
-export default function AuraiHero() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const { t, lang, toggleLang } = useTranslation()
-  const terminalLines = useMemo(() => [
+/* Isolated so the typewriter's ~18 updates/second only re-render this node
+   instead of the whole hero (video + blurs) — that repaint was the main
+   source of jank on phones. */
+function TerminalLine() {
+  const { t, lang } = useTranslation()
+  const lines = useMemo(() => [
     t('hero.terminal.boot'),
     t('hero.terminal.orchestrated'),
     t('hero.terminal.online'),
     t('hero.terminal.ready'),
   ], [lang])
-  const termText = useTypewriter(terminalLines)
-
-  const navLinks = [
-    { label: t('nav.services'), href: '#services' },
-    { label: t('nav.process'), href: '#process' },
-    { label: t('nav.work'), href: '#work' },
-    { label: t('nav.pricing'), href: '#pricing' },
-    { label: t('nav.contact'), href: '#contact' },
-  ]
+  const text = useTypewriter(lines)
 
   return (
-    <section className="relative w-full min-h-screen overflow-hidden bg-ink">
+    <span className="text-white/70 truncate">{text}</span>
+  )
+}
+
+/* Pauses the background video whenever the hero leaves the viewport. Decoding a
+   full-screen video off-screen is what made scrolling stutter on mobile. */
+function useVideoPlaybackGuard() {
+  const ref = useRef<HTMLVideoElement>(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      el.pause()
+      return
+    }
+
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) el.play().catch(() => {})
+        else el.pause()
+      },
+      { threshold: 0.01 }
+    )
+    obs.observe(el)
+
+    const onVisibility = () => {
+      if (document.hidden) el.pause()
+      else if (el.getBoundingClientRect().bottom > 0) el.play().catch(() => {})
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+
+    return () => {
+      obs.disconnect()
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
+  }, [])
+  return ref
+}
+
+export default function AuraiHero() {
+  const { t } = useTranslation()
+  const videoRef = useVideoPlaybackGuard()
+
+  return (
+    <section id="top" className="relative w-full min-h-[100svh] overflow-hidden bg-ink">
       {/* Main video background */}
       <video
+        ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
+        preload="metadata"
         className="absolute inset-0 w-full h-full object-cover
           [object-position:80%_center]
           md:[object-position:right_center]
@@ -80,7 +113,7 @@ export default function AuraiHero() {
       </video>
 
       {/* Readability scrims + green tint (Engenheiro-AI vibe) */}
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/20 md:via-ink/30 md:to-transparent" />
       <div
         className="absolute inset-0"
         style={{
@@ -89,93 +122,19 @@ export default function AuraiHero() {
         }}
       />
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col min-h-screen max-w-7xl mx-auto px-4 md:px-8 py-5 sm:py-7">
-        {/* Nav */}
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5 bg-white/[0.06] backdrop-blur-md rounded-2xl border border-white/10 px-4 py-2.5 sm:px-5 sm:py-3">
-            <BrandMark className="w-7 h-7" />
-            <span className="font-display text-white text-lg tracking-wide">Victor Ads</span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-7">
-            {navLinks.map((l) => (
-              <a key={l.label} href={l.href} className="text-white/70 text-sm hover:text-lime transition-colors drop-shadow">
-                {l.label}
-              </a>
-            ))}
-
-            {/* Language Toggle */}
-            <button
-              onClick={toggleLang}
-              className="flex items-center gap-1.5 text-white/60 hover:text-lime transition-colors text-sm px-3 py-1.5 rounded-full border border-white/10 hover:border-lime/40"
-              title={lang === 'en' ? 'Mudar para Português' : 'Switch to English'}
-            >
-              <Globe size={14} />
-              <span className="font-medium text-xs">{lang === 'en' ? 'PT' : 'EN'}</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <a href="/login" className="hidden sm:block text-white/70 text-sm hover:text-white transition-colors">
-              {t('nav.login')}
-            </a>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 bg-lime text-ink font-bold text-sm px-5 py-2.5 rounded-full hover:brightness-110 transition-all"
-              style={{ boxShadow: '0 0 28px rgba(158,255,0,0.25)' }}
-            >
-              {t('nav.letsTalk')}
-            </a>
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden text-white p-1"
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
-          </div>
-        </nav>
-
-        {/* Mobile menu */}
-        {menuOpen && (
-          <div className="md:hidden mt-3 bg-black/50 backdrop-blur-xl rounded-2xl p-5 border border-white/10">
-            <div className="flex flex-col gap-4">
-              {navLinks.map((l) => (
-                <a key={l.label} href={l.href} className="text-white/85 text-sm" onClick={() => setMenuOpen(false)}>
-                  {l.label}
-                </a>
-              ))}
-              <a href="/login" className="text-white/85 text-sm" onClick={() => setMenuOpen(false)}>
-                {t('nav.login')}
-              </a>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMenuOpen(false)}
-                className="w-full text-center bg-lime text-ink font-bold text-sm px-6 py-3 rounded-full mt-1"
-              >
-                {t('nav.letsTalk')}
-              </a>
-            </div>
-          </div>
-        )}
-
-        {/* Hero body */}
-        <div className="flex-1 flex flex-col justify-center max-w-3xl pb-[8vh]">
+      {/* Content — top padding clears the fixed SiteHeader */}
+      <div className="relative z-10 flex flex-col min-h-[100svh] max-w-7xl mx-auto px-4 md:px-8 pt-24 sm:pt-28 pb-10">
+        <div className="flex-1 flex flex-col justify-center max-w-3xl pb-[6vh]">
           {/* Terminal line */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2.5 self-start bg-white/[0.04] backdrop-blur-md border border-white/10 rounded-full pl-3.5 pr-4 py-2 mb-5 font-mono text-[13px]"
+            className="inline-flex items-center gap-2.5 self-start max-w-full bg-white/[0.04] backdrop-blur-md border border-white/10 rounded-full pl-3.5 pr-4 py-2 mb-5 font-mono text-[12px] sm:text-[13px]"
           >
-            <span className="text-lime font-bold">$</span>
-            <span className="text-white/70">{termText}</span>
-            <span className="term-cursor" />
+            <span className="text-lime font-bold shrink-0">$</span>
+            <TerminalLine />
+            <span className="term-cursor shrink-0" />
           </motion.div>
 
           {/* Badges with glowing dots */}
@@ -183,7 +142,7 @@ export default function AuraiHero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex flex-wrap gap-2.5 mb-6"
+            className="flex flex-wrap gap-2 sm:gap-2.5 mb-6"
           >
             {[
               { label: t('hero.badge.claude'), cyan: false },
@@ -192,10 +151,10 @@ export default function AuraiHero() {
             ].map((b) => (
               <span
                 key={b.label}
-                className="inline-flex items-center gap-2 font-mono text-[12.5px] text-white/65 bg-black/25 backdrop-blur-md border border-white/10 rounded-full px-3.5 py-1.5"
+                className="inline-flex items-center gap-2 font-mono text-[11.5px] sm:text-[12.5px] text-white/65 bg-black/25 backdrop-blur-md border border-white/10 rounded-full px-3 sm:px-3.5 py-1.5"
               >
                 <span
-                  className="w-1.5 h-1.5 rounded-full"
+                  className="w-1.5 h-1.5 rounded-full shrink-0"
                   style={{
                     background: b.cyan ? '#00E5A8' : '#9EFF00',
                     boxShadow: `0 0 8px ${b.cyan ? '#00E5A8' : '#9EFF00'}`,
@@ -210,7 +169,7 @@ export default function AuraiHero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.18 }}
-            className="font-inter font-black text-white text-[2.6rem] sm:text-6xl lg:text-7xl leading-[0.98] tracking-tight drop-shadow-lg"
+            className="font-inter font-black text-white text-[2.35rem] sm:text-6xl lg:text-7xl leading-[1.02] sm:leading-[0.98] tracking-tight drop-shadow-lg text-balance"
           >
             {t('hero.title.line1')}<br />
             <span className="text-gradient">{t('hero.title.line2')}</span>
@@ -220,7 +179,7 @@ export default function AuraiHero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.26 }}
-            className="text-white/70 text-base sm:text-lg max-w-xl leading-relaxed mt-6 drop-shadow"
+            className="text-white/70 text-[15px] sm:text-lg max-w-xl leading-relaxed mt-5 sm:mt-6 drop-shadow"
           >
             {t('hero.subtitle')}
           </motion.p>
@@ -230,7 +189,7 @@ export default function AuraiHero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.34 }}
-            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-9"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-7 sm:mt-9"
           >
             <a
               href={WHATSAPP_URL}
@@ -255,12 +214,12 @@ export default function AuraiHero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.44 }}
-            className="flex flex-wrap gap-2.5 mt-9"
+            className="flex flex-wrap gap-2 sm:gap-2.5 mt-7 sm:mt-9"
           >
             {[t('hero.pill.wf'), t('hero.pill.chatbots'), t('hero.pill.content')].map((p) => (
               <span
                 key={p}
-                className="font-mono bg-black/25 backdrop-blur-md text-white/60 text-xs px-3.5 py-1.5 rounded-full border border-white/10"
+                className="font-mono bg-black/25 backdrop-blur-md text-white/60 text-[11px] sm:text-xs px-3 sm:px-3.5 py-1.5 rounded-full border border-white/10"
               >
                 {p}
               </span>

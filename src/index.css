@@ -44,6 +44,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Stop iOS from inflating type when the phone is rotated */
+  -webkit-text-size-adjust: 100%;
+  color-scheme: dark;
 }
 
 body {
@@ -51,6 +54,20 @@ body {
   background: #070B0D;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Decorative blurred blobs sit outside their section on narrow screens;
+     without this the page gets a phantom sideways scroll on a phone. */
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Anchor links must land below the fixed header, not underneath it */
+section[id] {
+  scroll-margin-top: 76px;
+}
+
+/* Media and embeds never overflow their column */
+img, video, svg {
+  max-width: 100%;
 }
 
 /* Display headings = bold grotesk (Engenheiro-AI DNA) */
@@ -181,3 +198,25 @@ body {
   z-index: -1;
 }
 .glow-border:hover::before { opacity: 1; }
+
+/* ───────────────────── Mobile performance ─────────────────────
+   Phones composite large blurred layers on the GPU far more slowly than a
+   desktop. The permanently-running aurora/orbit animations plus the
+   mouse-follow spotlight were burning frames on every scroll, which is what
+   made the page feel like it was stuttering. None of them are reachable or
+   meaningful on a touch screen, so they get switched off there. */
+@media (max-width: 767px) {
+  .cursor-glow { display: none; }
+  .animate-aurora { animation: none; }
+  .animate-marquee { animation-duration: 26s; }
+}
+
+/* Same treatment for anyone who has asked the OS to reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-aurora,
+  .animate-marquee,
+  .animate-pulse-glow,
+  .animate-float-slow,
+  .text-gradient { animation: none !important; }
+}

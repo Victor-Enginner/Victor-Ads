@@ -37,7 +37,7 @@ export default function HowItWorks() {
   ]
 
   return (
-    <section id="process" className="relative bg-ink-soft py-24 md:py-32 overflow-hidden">
+    <section id="process" className="relative bg-ink-soft py-16 sm:py-24 md:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-grid opacity-40" />
       <div className="relative max-w-7xl mx-auto px-4 md:px-8">
         <motion.div
@@ -45,10 +45,10 @@ export default function HowItWorks() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-10 sm:mb-16"
         >
           <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('process.tag')}</span>
-          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl mt-4 text-white">
+          <h2 className="font-display text-[2.1rem] sm:text-4xl md:text-5xl lg:text-6xl mt-4 text-balance text-white">
             {t('process.title.line1')} <span className="text-gradient">{t('process.title.line2')}</span>
           </h2>
         </motion.div>

@@ -4,6 +4,7 @@ import { useAuthStore } from './stores/authStore';
 import { LanguageProvider } from './i18n/LanguageContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import DashboardLayout from './components/layout/DashboardLayout';
+import SiteHeader from './components/SiteHeader';
 import AuraiHero from './components/AuraiHero';
 import TrustMarquee from './components/TrustMarquee';
 import ScrollProgress from './components/ScrollProgress';
@@ -33,6 +34,7 @@ function LandingPage() {
     <>
       <ScrollProgress />
       <CursorGlow />
+      <SiteHeader />
       <AuraiHero />
       <TrustMarquee />
       <ServicesSection />

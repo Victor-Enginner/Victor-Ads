@@ -16,17 +16,17 @@ export default function FaqSection() {
   ]
 
   return (
-    <section id="faq" className="bg-ink-soft py-24 md:py-32">
+    <section id="faq" className="bg-ink-soft py-16 sm:py-24 md:py-32">
       <div className="max-w-3xl mx-auto px-4 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-14"
+          className="text-center mb-10 sm:mb-14"
         >
           <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('faq.tag')}</span>
-          <h2 className="font-display text-4xl md:text-5xl mt-4 text-white">
+          <h2 className="font-display text-[2.1rem] sm:text-4xl md:text-5xl mt-4 text-balance text-white">
             {t('faq.title.line1')} <span className="text-gradient">{t('faq.title.line2')}</span>
           </h2>
         </motion.div>

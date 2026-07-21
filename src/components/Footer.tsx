@@ -49,7 +49,7 @@ export default function Footer() {
           </div>
 
           {/* Nav */}
-          <div className="flex gap-16">
+          <div className="grid grid-cols-2 gap-8 sm:flex sm:gap-16">
             <div>
               <p className="text-white/30 text-[11px] uppercase tracking-wider mb-4">{t('footer.nav.title')}</p>
               <ul className="space-y-3">
@@ -90,7 +90,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 pt-6 border-t border-white/8 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="mt-10 sm:mt-14 pt-6 border-t border-white/8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white/30 text-xs">{t('footer.copyright')}</p>
           <p className="text-white/25 text-xs">{t('footer.tagline')}</p>
         </div>

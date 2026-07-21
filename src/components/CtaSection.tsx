@@ -6,7 +6,7 @@ import { useTranslation } from '../i18n/LanguageContext'
 export default function CtaSection() {
   const { t } = useTranslation()
   return (
-    <section id="contact" className="relative bg-ink py-24 md:py-36 overflow-hidden">
+    <section id="contact" className="relative bg-ink py-16 sm:py-24 md:py-36 overflow-hidden">
       {/* Aurora blobs */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-1/4 w-[420px] h-[420px] rounded-full bg-neon-violet/25 blur-[130px] animate-aurora" />
@@ -21,7 +21,7 @@ export default function CtaSection() {
         className="relative max-w-3xl mx-auto px-4 md:px-8 text-center"
       >
         <span className="font-mono text-lime text-xs uppercase tracking-[0.2em]">{t('cta.tag')}</span>
-        <h2 className="font-display text-4xl md:text-6xl lg:text-7xl mt-5 text-white leading-[1.05]">
+        <h2 className="font-display text-[2.2rem] sm:text-4xl md:text-6xl lg:text-7xl mt-5 text-balance text-white leading-[1.05]">
           {t('cta.title.line1')}<br />
           <span className="text-gradient">{t('cta.title.line2')}</span>
         </h2>
