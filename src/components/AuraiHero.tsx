@@ -50,22 +50,55 @@ function TerminalLine() {
   )
 }
 
-/* Pauses the background video whenever the hero leaves the viewport. Decoding a
-   full-screen video off-screen is what made scrolling stutter on mobile. */
+/* Keeps the hero background playing, and never lets it collapse into a flat
+   black rectangle.
+
+   Chrome keeps painting the `poster` until the video has actually *started*
+   playing, so anything that stopped playback before the first frame left the
+   hero empty. That is what a reduced-motion pause used to do: the video is the
+   page's whole identity, so it now plays regardless, and the still frame is
+   only a fallback for a browser that refuses to autoplay. Seeking decodes and
+   paints one real frame without playing.
+
+   The observer still pauses the video off-screen: decoding a full-screen video
+   the user cannot see is what made scrolling stutter on mobile. */
 function useVideoPlaybackGuard() {
   const ref = useRef<HTMLVideoElement>(null)
   useEffect(() => {
     const el = ref.current
     if (!el) return
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      el.pause()
-      return
+    let seekHandler: (() => void) | null = null
+
+    /* Autoplay was refused — paint a single frame so the hero still has an
+       image behind the copy. */
+    const showStillFrame = () => {
+      const apply = () => {
+        try {
+          if (el.currentTime === 0) el.currentTime = Math.min(0.1, (el.duration || 1) / 2)
+        } catch {
+          /* not seekable yet — the poster-less video just shows the section bg */
+        }
+      }
+      if (el.readyState >= 1) apply()
+      else {
+        seekHandler = apply
+        el.addEventListener('loadedmetadata', apply, { once: true })
+      }
+    }
+
+    const detachSeek = () => {
+      if (seekHandler) el.removeEventListener('loadedmetadata', seekHandler)
+      seekHandler = null
+    }
+
+    const play = () => {
+      el.play().catch(showStillFrame)
     }
 
     const obs = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) el.play().catch(() => {})
+        if (entry.isIntersecting) play()
         else el.pause()
       },
       { threshold: 0.01 }
@@ -74,13 +107,14 @@ function useVideoPlaybackGuard() {
 
     const onVisibility = () => {
       if (document.hidden) el.pause()
-      else if (el.getBoundingClientRect().bottom > 0) el.play().catch(() => {})
+      else if (el.getBoundingClientRect().bottom > 0) play()
     }
     document.addEventListener('visibilitychange', onVisibility)
 
     return () => {
       obs.disconnect()
       document.removeEventListener('visibilitychange', onVisibility)
+      detachSeek()
     }
   }, [])
   return ref
@@ -104,7 +138,6 @@ export default function AuraiHero() {
           [object-position:80%_center]
           md:[object-position:right_center]
           lg:[object-position:center_center]"
-        poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3Crect fill='%23070B0D' width='1920' height='1080'/%3E%3C/svg%3E"
       >
         <source
           src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260618_174853_aac61aa2-0f3f-4cf1-bc78-7f657dd11164.mp4"
