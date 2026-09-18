@@ -158,7 +158,10 @@ export default function AuraiHero() {
 
   return (
     <section id="top" className="relative w-full min-h-[100svh] overflow-hidden bg-ink">
-      {/* Main video background */}
+      {/* Main video background. Both files are served from this origin — the
+          hero used to depend on a third-party CDN URL nobody here controls.
+          The poster is a real frame of the same shot, so a slow or refused
+          video degrades to the image instead of to nothing. */}
       <video
         ref={videoRef}
         autoPlay
@@ -166,15 +169,13 @@ export default function AuraiHero() {
         muted
         playsInline
         preload="metadata"
+        poster="/hero-poster.jpg"
         className="absolute inset-0 w-full h-full object-cover
           [object-position:80%_center]
           md:[object-position:right_center]
           lg:[object-position:center_center]"
       >
-        <source
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260618_174853_aac61aa2-0f3f-4cf1-bc78-7f657dd11164.mp4"
-          type="video/mp4"
-        />
+        <source src="/hero-background.mp4" type="video/mp4" />
       </video>
 
       {/* Readability scrims + green tint (Engenheiro-AI vibe) */}
