@@ -56,23 +56,27 @@ function TerminalLine() {
    Chrome keeps painting the `poster` until the video has actually *started*
    playing, so anything that stopped playback before the first frame left the
    hero empty. That is what a reduced-motion pause used to do: the video is the
-   page's whole identity, so it now plays regardless, and the still frame is
-   only a fallback for a browser that refuses to autoplay. Seeking decodes and
-   paints one real frame without playing.
+   page's whole identity, so it now plays regardless.
 
-   The observer still pauses the video off-screen: decoding a full-screen video
-   the user cannot see is what made scrolling stutter on mobile. */
+   Playback is driven from one `sync()`, so neither of the things that suspend
+   it — scrolling the hero away, hiding the tab — can leave it parked. The
+   pauses themselves stay: decoding a full-screen video the user cannot see is
+   what made scrolling stutter on mobile. */
+const RESUME_EVENTS = ['pointerdown', 'keydown', 'touchstart', 'scroll'] as const
+
 function useVideoPlaybackGuard() {
   const ref = useRef<HTMLVideoElement>(null)
   useEffect(() => {
     const el = ref.current
     if (!el) return
 
+    let onScreen = true
+    let resumeArmed = false
     let seekHandler: (() => void) | null = null
 
-    /* Autoplay was refused — paint a single frame so the hero still has an
-       image behind the copy. */
-    const showStillFrame = () => {
+    /* Autoplay was refused. Seek so one real frame is decoded and painted —
+       the hero gets an image behind the copy instead of nothing. */
+    function showStillFrame() {
       const apply = () => {
         try {
           if (el.currentTime === 0) el.currentTime = Math.min(0.1, (el.duration || 1) / 2)
@@ -87,33 +91,65 @@ function useVideoPlaybackGuard() {
       }
     }
 
-    const detachSeek = () => {
+    function detachSeek() {
       if (seekHandler) el.removeEventListener('loadedmetadata', seekHandler)
       seekHandler = null
     }
 
-    const play = () => {
-      el.play().catch(showStillFrame)
+    /* A refusal is rarely permanent — the first interaction usually lifts it,
+       so the still frame is a stopgap rather than the final state. */
+    function armResume() {
+      if (resumeArmed) return
+      resumeArmed = true
+      RESUME_EVENTS.forEach((e) => window.addEventListener(e, onResume, { passive: true }))
+    }
+
+    function disarmResume() {
+      RESUME_EVENTS.forEach((e) => window.removeEventListener(e, onResume))
+      resumeArmed = false
+    }
+
+    function onResume() {
+      disarmResume()
+      sync()
+    }
+
+    function play() {
+      /* `pause()` racing an in-flight `play()` rejects with AbortError. That is
+         this guard's own pause, not a refusal, and freezing the hero over it
+         would undo the whole fix — only NotAllowedError means autoplay was
+         actually denied. */
+      el.play().catch((err: DOMException) => {
+        if (err?.name !== 'NotAllowedError') return
+        showStillFrame()
+        armResume()
+      })
+    }
+
+    function sync() {
+      if (onScreen && !document.hidden) play()
+      else el.pause()
     }
 
     const obs = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) play()
-        else el.pause()
+        onScreen = entry.isIntersecting
+        sync()
       },
       { threshold: 0.01 }
     )
     obs.observe(el)
 
-    const onVisibility = () => {
-      if (document.hidden) el.pause()
-      else if (el.getBoundingClientRect().bottom > 0) play()
-    }
-    document.addEventListener('visibilitychange', onVisibility)
+    document.addEventListener('visibilitychange', sync)
+    /* A play() that lost a race leaves the video parked with no event of its
+       own to recover from; `canplay` is the reliable point to pick it back up. */
+    el.addEventListener('canplay', sync)
 
     return () => {
       obs.disconnect()
-      document.removeEventListener('visibilitychange', onVisibility)
+      document.removeEventListener('visibilitychange', sync)
+      el.removeEventListener('canplay', sync)
+      disarmResume()
       detachSeek()
     }
   }, [])
