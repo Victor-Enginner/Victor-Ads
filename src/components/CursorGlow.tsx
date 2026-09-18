@@ -4,9 +4,8 @@ export default function CursorGlow() {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Skip on touch devices / reduced motion
+    // Skip on touch devices — there is no cursor to follow
     if (window.matchMedia('(pointer: coarse)').matches) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const el = ref.current
     if (!el) return

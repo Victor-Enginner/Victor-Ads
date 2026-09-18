@@ -7,10 +7,6 @@ import { useTranslation } from '../i18n/LanguageContext'
 function useTypewriter(lines: string[], speed = 55, pause = 1400) {
   const [text, setText] = useState('')
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setText(lines[lines.length - 1])
-      return
-    }
     let li = 0, ci = 0, deleting = false
     let timer: ReturnType<typeof setTimeout>
     const tick = () => {

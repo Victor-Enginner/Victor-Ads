@@ -166,10 +166,6 @@ img, video, svg {
   transform: skewX(-18deg);
   animation: btn-shine 3.4s ease-in-out infinite;
 }
-@media (prefers-reduced-motion: reduce) {
-  .term-cursor, .btn-shine::after { animation: none !important; }
-}
-
 /* Soft grid texture */
 .bg-grid {
   background-image:
@@ -211,12 +207,11 @@ img, video, svg {
   .animate-marquee { animation-duration: 26s; }
 }
 
-/* Same treatment for anyone who has asked the OS to reduce motion */
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .animate-aurora,
-  .animate-marquee,
-  .animate-pulse-glow,
-  .animate-float-slow,
-  .text-gradient { animation: none !important; }
-}
+/* ─────────────────── On prefers-reduced-motion ───────────────────
+   There is deliberately no `@media (prefers-reduced-motion: reduce)` rule here.
+   Every ambient animation on this page used to be switched off by one, and the
+   combined result on a desktop with Windows' animation effects turned off was a
+   dead page: a black hero, a frozen logo marquee, no aurora, no gradient, no
+   typing. The motion IS the product here — it is a portfolio for automation
+   work — so it runs for everyone, and the size query above is what protects
+   phones. Revisit only with a design that degrades instead of one that stops. */
