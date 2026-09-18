@@ -40,3 +40,6 @@ backend/dist
 
 .vercel
 nul
+
+# Local tool config
+.neon
